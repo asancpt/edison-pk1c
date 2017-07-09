@@ -1,6 +1,9 @@
-# one comp simulation
+# one comp simulation - Edison Project
 
-# files
+
+시뮬레이션을 할 수 있는 Edison 앱입니다.
+
+## Data files
 
 - `1CompIV-NCA-result.csv`, `1CompIV-SimConc.csv`
 - `FullCov-1coma.csv`, `FullCov2-1coma.csv`
