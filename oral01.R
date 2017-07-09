@@ -2,7 +2,7 @@
 
 # Library -----------------------------------------------------------------
 
-if (sessionInfo()$platform == "x86_64-pc-linux-gnu (64-bit)") .libPaths("./packrat/x86_64-pc-linux-gnu/3.3.2/")
+if (sessionInfo()$platform == "x86_64-pc-linux-gnu (64-bit)") .libPaths("./packrat/lib/x86_64-pc-linux-gnu/3.3.2/")
 
 mylib <- c("ncar", "dplyr")
 lapply(mylib, library, character.only = TRUE) # if needed # install.packages(mylib, lib = localLibPath)
