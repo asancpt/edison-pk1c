@@ -1,0 +1,11 @@
+---
+output:
+  html_document:
+    toc: yes
+    df_print: tibble
+---
+
+# Oral Dosing Simulation
+
+```{r code = readLines("R/pk1coma.R"), error = TRUE}
+```
