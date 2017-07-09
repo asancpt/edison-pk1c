@@ -1,0 +1,15 @@
+---
+title: Oral Dosing
+date: 2017-07-08
+author: Sungpil Han
+output:
+  html_document:
+    toc: yes
+    df_print: tibble
+---
+
+# Oral Dosing Simulation
+
+```{r code = readLines("R/pk1coma-simple.R"), error = TRUE}
+```
+
