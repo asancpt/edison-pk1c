@@ -204,7 +204,6 @@ pk1coma = function(CL, V, Ka, BioA=1, DosingHistory, Time, PropE=0, AddE=0, LLoQ
   return(cbind(Time, Conc))
 }
 
-
 CL = 20
 V = 100
 Ka = 2
@@ -214,35 +213,32 @@ DH1 = matrix(c(0, 100000), nrow=1, ncol=2, byrow=TRUE)
 
 x1 = pk1coma(CL, V, Ka, BioA=1, DH1, Time, PropE=0.1, AddE=1, LLoQ=0, Jitter=2)
 # windows()
-plot(x1[,&quot;Time&quot;], x1[,&quot;Conc&quot;], type=&quot;o&quot;)
-</code></pre>
+# plot(x1[,&quot;Time&quot;], x1[,&quot;Conc&quot;], type=&quot;o&quot;)
 
-<p><img src="figure/unnamed-chunk-1-1.png" alt="plot of chunk unnamed-chunk-1"></p>
-
-<pre><code class="r">library(ncar)
+library(ncar)
 sNCA(x1[,&quot;Time&quot;], x1[,&quot;Conc&quot;], dose=100000)
 </code></pre>
 
 <pre><code>##            b0          CMAX         CMAXD          TMAX          TLAG 
-##  6.867775e+00  7.681966e+02  7.681966e-03  1.020000e+00  0.000000e+00 
+##  7.123110e+00  8.336992e+02  8.336992e-03  2.010000e+00  0.000000e+00 
 ##          CLST         CLSTP          TLST        LAMZHL          LAMZ 
-##  8.701036e+00  8.756325e+00  2.396000e+01  3.535081e+00  1.960767e-01 
+##  9.353235e+00  9.388683e+00  2.402000e+01  3.409243e+00  2.033141e-01 
 ##        LAMZLL        LAMZUL       LAMZNPT        CORRXY            R2 
-##  4.950000e+00  2.396000e+01  5.000000e+00 -9.994759e-01  9.989521e-01 
+##  4.000000e+00  2.402000e+01  6.000000e+00 -9.990388e-01  9.980785e-01 
 ##         R2ADJ            C0        AUCLST        AUCALL        AUCIFO 
-##  9.986028e-01            NA  4.813957e+03  4.813957e+03  4.858333e+03 
+##  9.975982e-01            NA  5.652909e+03  5.652909e+03  5.698913e+03 
 ##       AUCIFOD        AUCIFP       AUCIFPD        AUCPEO        AUCPEP 
-##  4.858333e-02  4.858615e+03  4.858615e-02  9.133928e-01  9.191434e-01 
+##  5.698913e-02  5.699087e+03  5.699087e-02  8.072393e-01  8.102739e-01 
 ##       AUCPBEO       AUCPBEP       AUMCLST       AUMCIFO       AUMCIFP 
-##            NA            NA  2.509286e+04  2.638242e+04  2.639062e+04 
+##            NA            NA  3.004200e+04  3.137328e+04  3.137833e+04 
 ##       AUMCPEO       AUMCPEP      MRTIVLST      MRTIVIFO      MRTIVIFP 
-##  4.887946e+00  4.917479e+00            NA            NA            NA 
+##  4.243364e+00  4.258761e+00            NA            NA            NA 
 ##      MRTEVLST      MRTEVIFO      MRTEVIFP           VZO           VZP 
-##  5.212523e+00  5.430345e+00  5.431716e+00            NA            NA 
+##  5.314432e+00  5.505135e+00  5.505852e+00            NA            NA 
 ##          VZFO          VZFP           CLO           CLP          CLFO 
-##  1.049752e+05  1.049691e+05            NA            NA  2.058319e+04 
+##  8.630589e+04  8.630325e+04            NA            NA  1.754721e+04 
 ##          CLFP          VSSO          VSSP 
-##  2.058200e+04            NA            NA 
+##  1.754667e+04            NA            NA 
 ## attr(,&quot;units&quot;)
 ##  [1] &quot;&quot;          &quot;ug/L&quot;      &quot;ug/L/mg&quot;   &quot;h&quot;         &quot;h&quot;        
 ##  [6] &quot;ug/L&quot;      &quot;ug/L&quot;      &quot;h&quot;         &quot;h&quot;         &quot;/h&quot;       

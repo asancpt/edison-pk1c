@@ -1,0 +1,11 @@
+---
+output:
+  html_document:
+    toc: yes
+    df_print: tibble
+---
+
+# IV Dosing Simulation
+
+```{r code = readLines("R/pk1cima.R"), error = TRUE}
+```

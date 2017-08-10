@@ -27,7 +27,6 @@ pk1coma = function(CL, V, Ka, BioA=1, DosingHistory, Time, PropE=0, AddE=0, LLoQ
   return(cbind(Time, Conc))
 }
 
-
 CL = 20
 V = 100
 Ka = 2
