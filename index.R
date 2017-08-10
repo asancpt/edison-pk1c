@@ -4,7 +4,7 @@
 
 if (Sys.info()['sysname'] == 'Linux') .libPaths("./lib")
 
-mylib <- c('markdown')
+mylib <- c('markdown', 'knitr')
 lapply(mylib, library, character.only = TRUE) # if needed # install.packages(mylib, lib = localLibPath)
 
 # Argument ----------------------------------------------------------------
@@ -16,7 +16,7 @@ if (length(intersect(dir(), "result")) == 0) {
   system("mkdir result")
 }
 
-file_doc2 <- "oral01"
+file_doc2 <- "documentation"
 knitr::knit(paste0(file_doc2, ".Rmd"), paste0(file_doc2, ".md"))
 markdownToHTML(paste0(file_doc2, ".md"), 
                "result/README.html", 
@@ -24,4 +24,3 @@ markdownToHTML(paste0(file_doc2, ".md"),
 
 system(paste0('rm ', file_doc2, '.md'))
 
-#browseURL("result/Report_Appendix.html")
