@@ -8,8 +8,33 @@ output:
     df_print: tibble
 ---
 
-# Oral Dosing Simulation
+# IV Dosing Simulation
 
-```{r code = readLines("R/pk1coma-simple.R"), error = TRUE}
+```{r include = FALSE}
+library(knitr)
+knitr::opts_chunk$set(results = 'asis', echo = FALSE)
+load('result/output.Rdata')
 ```
 
+## Setting variables
+
+```{r}
+kable(inputRaw)
+```
+
+## Concentration-time plot
+
+![Test](concTimePlot.jpg)
+
+
+## Individual concentration-time plot
+
+![](concTimeFacet.jpg)
+
+# Appendix
+
+## Source table
+
+```{r}
+kable(output$concTable)
+```

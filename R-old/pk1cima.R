@@ -53,7 +53,6 @@ MakeFullCov = function(BaseCov, OccsCov)
 }
 chol(MakeFullCov(BaseCov, OccsCov))
 
-
 library(MASS)
 #x2 = mvrnorm(100, mu=c(0,0), Sigma=BaseCov)
 #x3 = mvrnorm(100, mu=c(0,0), Sigma=BaseCov)
@@ -101,7 +100,6 @@ resNCA = tabNCA(Conc, colSubj="SUBJ", colTime="TIME", colConc="CONC", dose=10000
 
 write.csv(Conc, "1CompIV-SimConc.csv", row.names=FALSE, quote=FALSE)
 write.csv(resNCA, "1CompIV-NCA-result.csv", row.names=FALSE, quote=FALSE)
-
 
 # Hint from real data
 be1 = read.csv("~/shanmdphd/belib/data-raw/Cmax.csv") # Where's the file?

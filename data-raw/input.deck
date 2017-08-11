@@ -1,0 +1,13 @@
+nSubj = 10 ;
+CL= 30 ;
+V = 100 ;
+Ka = 2 ;
+BioA = 1 ;
+DH1 = 0, 100000 ;
+Time = 0, 0.25, 0.5, 1, 2, 4, 5, 7, 9, 12, 24 ;
+PropE = 0.1 ;
+AddE = 0.1  ;
+LLoQ = 0  ;
+Jitter = 1 ;
+FullCov = 0.04, 0.03, 0.03, 0.04 ;
+concLog = FALSE ;

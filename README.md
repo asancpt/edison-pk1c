@@ -1,7 +1,6 @@
 # one comp simulation - Edison Project
 
-
-시뮬레이션을 할 수 있는 Edison 앱입니다.
+시뮬레이션을 할 수 있는 edison 앱입니다.
 
 ## Data files
 

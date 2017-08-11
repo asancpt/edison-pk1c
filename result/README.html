@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-<title>Oral Dosing Simulation</title>
+<title>PK 1comp IV</title>
 
 <script type="text/javascript">
 window.onload = function() {
@@ -167,90 +167,776 @@ hr {
 <div id="toc_header">Table of Contents</div>
 <ul>
 <li>
-<a href="#toc_0">Oral Dosing Simulation</a>
+<a href="#toc_0">IV Dosing Simulation</a>
+<ul>
+<li>
+<a href="#toc_1">Setting variables</a>
+</li>
+<li>
+<a href="#toc_2">Concentration-time plot</a>
+</li>
+<li>
+<a href="#toc_3">Individual concentration-time plot</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_4">Appendix</a>
+<ul>
+<li>
+<a href="#toc_5">Source table</a>
+</li>
+</ul>
 </li>
 </ul>
 </div>
 
 
-<h1 id="toc_0">Oral Dosing Simulation</h1>
+<h1 id="toc_0">IV Dosing Simulation</h1>
 
-<pre><code class="r"># simOral1comp ----
+<h2 id="toc_1">Setting variables</h2>
 
-pk1coma = function(CL, V, Ka, BioA=1, DosingHistory, Time, PropE=0, AddE=0, LLoQ=0, Jitter=0)
-{
-  nObs = length(Time)
-  Conc = rep(0, nObs)
-  ke = CL/V
+<table><thead>
+<tr>
+<th align="left">param</th>
+<th align="left">value</th>
+</tr>
+</thead><tbody>
+<tr>
+<td align="left">nSubj</td>
+<td align="left">10</td>
+</tr>
+<tr>
+<td align="left">CL</td>
+<td align="left">30</td>
+</tr>
+<tr>
+<td align="left">V</td>
+<td align="left">100</td>
+</tr>
+<tr>
+<td align="left">Ka</td>
+<td align="left">2</td>
+</tr>
+<tr>
+<td align="left">BioA</td>
+<td align="left">1</td>
+</tr>
+<tr>
+<td align="left">DH1</td>
+<td align="left">0, 100000</td>
+</tr>
+<tr>
+<td align="left">Time</td>
+<td align="left">0, 0.25, 0.5, 1, 2, 4, 5, 7, 9, 12, 24</td>
+</tr>
+<tr>
+<td align="left">PropE</td>
+<td align="left">0.1</td>
+</tr>
+<tr>
+<td align="left">AddE</td>
+<td align="left">0.1</td>
+</tr>
+<tr>
+<td align="left">LLoQ</td>
+<td align="left">0</td>
+</tr>
+<tr>
+<td align="left">Jitter</td>
+<td align="left">1</td>
+</tr>
+<tr>
+<td align="left">FullCov</td>
+<td align="left">0.04, 0.03, 0.03, 0.04</td>
+</tr>
+<tr>
+<td align="left">concLog</td>
+<td align="left">FALSE</td>
+</tr>
+</tbody></table>
 
-  if (Jitter &gt; 0) Time = round(jitter(Time), Jitter)
-  Time[Time &lt; 0] = 0
+<h2 id="toc_2">Concentration-time plot</h2>
 
-  TERM1 = BioA*Ka/(Ka - ke)/V
-  DH = DosingHistory[DosingHistory[,2] &gt; 0,,drop=FALSE]
-  nAmt = nrow(DH)
-  for (i in 1:nAmt) {
-    TERM2 = DH[i, 2]*TERM1
-    dTime = Time - DH[i, 1]
-    dTime2 = dTime[dTime &gt;= 0]
-    Conc = Conc + c(rep(0, length(dTime) - length(dTime2)), TERM2*(exp(-ke*dTime2) - exp(-Ka*dTime2)))
-  }
+<p><img src="concTimePlot.jpg" alt="Test"></p>
 
-  Err1 = rnorm(nObs, mean=0, sd=PropE)
-  Err2 = rnorm(nObs, mean=0, sd=AddE)
+<h2 id="toc_3">Individual concentration-time plot</h2>
 
-  Conc = Conc + Conc*Err1 + Err2
-  Conc[Conc &lt; LLoQ] = 0
-  return(cbind(Time, Conc))
-}
+<p><img src="concTimeFacet.jpg" alt=""></p>
 
-CL = 20
-V = 100
-Ka = 2
-Time = c(0, 0.25, 0.5, 1, 2, 4, 5, 7, 9, 12, 24)
+<h1 id="toc_4">Appendix</h1>
 
-DH1 = matrix(c(0, 100000), nrow=1, ncol=2, byrow=TRUE)
+<h2 id="toc_5">Source table</h2>
 
-x1 = pk1coma(CL, V, Ka, BioA=1, DH1, Time, PropE=0.1, AddE=1, LLoQ=0, Jitter=2)
-# windows()
-# plot(x1[,&quot;Time&quot;], x1[,&quot;Conc&quot;], type=&quot;o&quot;)
-
-library(ncar)
-sNCA(x1[,&quot;Time&quot;], x1[,&quot;Conc&quot;], dose=100000)
-</code></pre>
-
-<pre><code>##            b0          CMAX         CMAXD          TMAX          TLAG 
-##  7.123110e+00  8.336992e+02  8.336992e-03  2.010000e+00  0.000000e+00 
-##          CLST         CLSTP          TLST        LAMZHL          LAMZ 
-##  9.353235e+00  9.388683e+00  2.402000e+01  3.409243e+00  2.033141e-01 
-##        LAMZLL        LAMZUL       LAMZNPT        CORRXY            R2 
-##  4.000000e+00  2.402000e+01  6.000000e+00 -9.990388e-01  9.980785e-01 
-##         R2ADJ            C0        AUCLST        AUCALL        AUCIFO 
-##  9.975982e-01            NA  5.652909e+03  5.652909e+03  5.698913e+03 
-##       AUCIFOD        AUCIFP       AUCIFPD        AUCPEO        AUCPEP 
-##  5.698913e-02  5.699087e+03  5.699087e-02  8.072393e-01  8.102739e-01 
-##       AUCPBEO       AUCPBEP       AUMCLST       AUMCIFO       AUMCIFP 
-##            NA            NA  3.004200e+04  3.137328e+04  3.137833e+04 
-##       AUMCPEO       AUMCPEP      MRTIVLST      MRTIVIFO      MRTIVIFP 
-##  4.243364e+00  4.258761e+00            NA            NA            NA 
-##      MRTEVLST      MRTEVIFO      MRTEVIFP           VZO           VZP 
-##  5.314432e+00  5.505135e+00  5.505852e+00            NA            NA 
-##          VZFO          VZFP           CLO           CLP          CLFO 
-##  8.630589e+04  8.630325e+04            NA            NA  1.754721e+04 
-##          CLFP          VSSO          VSSP 
-##  1.754667e+04            NA            NA 
-## attr(,&quot;units&quot;)
-##  [1] &quot;&quot;          &quot;ug/L&quot;      &quot;ug/L/mg&quot;   &quot;h&quot;         &quot;h&quot;        
-##  [6] &quot;ug/L&quot;      &quot;ug/L&quot;      &quot;h&quot;         &quot;h&quot;         &quot;/h&quot;       
-## [11] &quot;h&quot;         &quot;h&quot;         &quot;&quot;          &quot;&quot;          &quot;&quot;         
-## [16] &quot;&quot;          &quot;ug/L&quot;      &quot;h*ug/L&quot;    &quot;h*ug/L&quot;    &quot;h*ug/L&quot;   
-## [21] &quot;h*ug/L/mg&quot; &quot;h*ug/L&quot;    &quot;h*ug/L/mg&quot; &quot;%&quot;         &quot;%&quot;        
-## [26] &quot;%&quot;         &quot;%&quot;         &quot;h2*ug/L&quot;   &quot;h2*ug/L&quot;   &quot;h2*ug/L&quot;  
-## [31] &quot;%&quot;         &quot;%&quot;         &quot;h&quot;         &quot;h&quot;         &quot;h&quot;        
-## [36] &quot;h&quot;         &quot;h&quot;         &quot;h&quot;         &quot;L&quot;         &quot;L&quot;        
-## [41] &quot;L&quot;         &quot;L&quot;         &quot;L/h&quot;       &quot;L/h&quot;       &quot;L/h&quot;      
-## [46] &quot;L/h&quot;       &quot;L&quot;         &quot;L&quot;
-</code></pre>
+<table><thead>
+<tr>
+<th align="left">SUBJ</th>
+<th align="right">nTIME</th>
+<th align="right">TIME</th>
+<th align="right">CONC</th>
+</tr>
+</thead><tbody>
+<tr>
+<td align="left">1</td>
+<td align="right">0.00</td>
+<td align="right">0.0</td>
+<td align="right">958.248</td>
+</tr>
+<tr>
+<td align="left">1</td>
+<td align="right">0.25</td>
+<td align="right">0.2</td>
+<td align="right">782.826</td>
+</tr>
+<tr>
+<td align="left">1</td>
+<td align="right">0.50</td>
+<td align="right">0.5</td>
+<td align="right">899.770</td>
+</tr>
+<tr>
+<td align="left">1</td>
+<td align="right">1.00</td>
+<td align="right">1.0</td>
+<td align="right">819.917</td>
+</tr>
+<tr>
+<td align="left">1</td>
+<td align="right">2.00</td>
+<td align="right">2.0</td>
+<td align="right">659.851</td>
+</tr>
+<tr>
+<td align="left">1</td>
+<td align="right">4.00</td>
+<td align="right">4.0</td>
+<td align="right">409.445</td>
+</tr>
+<tr>
+<td align="left">1</td>
+<td align="right">5.00</td>
+<td align="right">5.0</td>
+<td align="right">300.704</td>
+</tr>
+<tr>
+<td align="left">1</td>
+<td align="right">7.00</td>
+<td align="right">7.0</td>
+<td align="right">181.370</td>
+</tr>
+<tr>
+<td align="left">1</td>
+<td align="right">9.00</td>
+<td align="right">9.0</td>
+<td align="right">112.249</td>
+</tr>
+<tr>
+<td align="left">1</td>
+<td align="right">12.00</td>
+<td align="right">12.0</td>
+<td align="right">61.841</td>
+</tr>
+<tr>
+<td align="left">1</td>
+<td align="right">24.00</td>
+<td align="right">24.0</td>
+<td align="right">3.312</td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="right">0.00</td>
+<td align="right">0.0</td>
+<td align="right">1481.598</td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="right">0.25</td>
+<td align="right">0.2</td>
+<td align="right">1392.166</td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="right">0.50</td>
+<td align="right">0.5</td>
+<td align="right">1086.881</td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="right">1.00</td>
+<td align="right">1.0</td>
+<td align="right">833.737</td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="right">2.00</td>
+<td align="right">2.0</td>
+<td align="right">514.762</td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="right">4.00</td>
+<td align="right">4.0</td>
+<td align="right">311.077</td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="right">5.00</td>
+<td align="right">5.0</td>
+<td align="right">230.565</td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="right">7.00</td>
+<td align="right">7.0</td>
+<td align="right">93.578</td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="right">9.00</td>
+<td align="right">9.0</td>
+<td align="right">48.412</td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="right">12.00</td>
+<td align="right">12.0</td>
+<td align="right">16.463</td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="right">24.00</td>
+<td align="right">24.0</td>
+<td align="right">0.259</td>
+</tr>
+<tr>
+<td align="left">3</td>
+<td align="right">0.00</td>
+<td align="right">0.0</td>
+<td align="right">720.668</td>
+</tr>
+<tr>
+<td align="left">3</td>
+<td align="right">0.25</td>
+<td align="right">0.3</td>
+<td align="right">725.620</td>
+</tr>
+<tr>
+<td align="left">3</td>
+<td align="right">0.50</td>
+<td align="right">0.5</td>
+<td align="right">800.313</td>
+</tr>
+<tr>
+<td align="left">3</td>
+<td align="right">1.00</td>
+<td align="right">1.0</td>
+<td align="right">460.663</td>
+</tr>
+<tr>
+<td align="left">3</td>
+<td align="right">2.00</td>
+<td align="right">2.0</td>
+<td align="right">381.665</td>
+</tr>
+<tr>
+<td align="left">3</td>
+<td align="right">4.00</td>
+<td align="right">4.0</td>
+<td align="right">155.219</td>
+</tr>
+<tr>
+<td align="left">3</td>
+<td align="right">5.00</td>
+<td align="right">5.0</td>
+<td align="right">126.713</td>
+</tr>
+<tr>
+<td align="left">3</td>
+<td align="right">7.00</td>
+<td align="right">7.0</td>
+<td align="right">60.531</td>
+</tr>
+<tr>
+<td align="left">3</td>
+<td align="right">9.00</td>
+<td align="right">9.0</td>
+<td align="right">32.424</td>
+</tr>
+<tr>
+<td align="left">3</td>
+<td align="right">12.00</td>
+<td align="right">12.0</td>
+<td align="right">11.234</td>
+</tr>
+<tr>
+<td align="left">3</td>
+<td align="right">24.00</td>
+<td align="right">24.0</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">4</td>
+<td align="right">0.00</td>
+<td align="right">0.0</td>
+<td align="right">780.032</td>
+</tr>
+<tr>
+<td align="left">4</td>
+<td align="right">0.25</td>
+<td align="right">0.2</td>
+<td align="right">801.513</td>
+</tr>
+<tr>
+<td align="left">4</td>
+<td align="right">0.50</td>
+<td align="right">0.5</td>
+<td align="right">707.590</td>
+</tr>
+<tr>
+<td align="left">4</td>
+<td align="right">1.00</td>
+<td align="right">1.0</td>
+<td align="right">674.734</td>
+</tr>
+<tr>
+<td align="left">4</td>
+<td align="right">2.00</td>
+<td align="right">2.0</td>
+<td align="right">540.179</td>
+</tr>
+<tr>
+<td align="left">4</td>
+<td align="right">4.00</td>
+<td align="right">4.0</td>
+<td align="right">365.488</td>
+</tr>
+<tr>
+<td align="left">4</td>
+<td align="right">5.00</td>
+<td align="right">5.0</td>
+<td align="right">250.991</td>
+</tr>
+<tr>
+<td align="left">4</td>
+<td align="right">7.00</td>
+<td align="right">7.0</td>
+<td align="right">181.260</td>
+</tr>
+<tr>
+<td align="left">4</td>
+<td align="right">9.00</td>
+<td align="right">9.0</td>
+<td align="right">92.887</td>
+</tr>
+<tr>
+<td align="left">4</td>
+<td align="right">12.00</td>
+<td align="right">12.0</td>
+<td align="right">46.185</td>
+</tr>
+<tr>
+<td align="left">4</td>
+<td align="right">24.00</td>
+<td align="right">24.0</td>
+<td align="right">2.125</td>
+</tr>
+<tr>
+<td align="left">5</td>
+<td align="right">0.00</td>
+<td align="right">0.0</td>
+<td align="right">1075.782</td>
+</tr>
+<tr>
+<td align="left">5</td>
+<td align="right">0.25</td>
+<td align="right">0.2</td>
+<td align="right">1178.051</td>
+</tr>
+<tr>
+<td align="left">5</td>
+<td align="right">0.50</td>
+<td align="right">0.5</td>
+<td align="right">1191.953</td>
+</tr>
+<tr>
+<td align="left">5</td>
+<td align="right">1.00</td>
+<td align="right">1.0</td>
+<td align="right">1048.815</td>
+</tr>
+<tr>
+<td align="left">5</td>
+<td align="right">2.00</td>
+<td align="right">2.0</td>
+<td align="right">591.498</td>
+</tr>
+<tr>
+<td align="left">5</td>
+<td align="right">4.00</td>
+<td align="right">4.0</td>
+<td align="right">390.767</td>
+</tr>
+<tr>
+<td align="left">5</td>
+<td align="right">5.00</td>
+<td align="right">5.0</td>
+<td align="right">327.003</td>
+</tr>
+<tr>
+<td align="left">5</td>
+<td align="right">7.00</td>
+<td align="right">7.0</td>
+<td align="right">154.645</td>
+</tr>
+<tr>
+<td align="left">5</td>
+<td align="right">9.00</td>
+<td align="right">9.0</td>
+<td align="right">85.459</td>
+</tr>
+<tr>
+<td align="left">5</td>
+<td align="right">12.00</td>
+<td align="right">12.0</td>
+<td align="right">40.774</td>
+</tr>
+<tr>
+<td align="left">5</td>
+<td align="right">24.00</td>
+<td align="right">24.0</td>
+<td align="right">1.389</td>
+</tr>
+<tr>
+<td align="left">6</td>
+<td align="right">0.00</td>
+<td align="right">0.0</td>
+<td align="right">714.190</td>
+</tr>
+<tr>
+<td align="left">6</td>
+<td align="right">0.25</td>
+<td align="right">0.3</td>
+<td align="right">739.253</td>
+</tr>
+<tr>
+<td align="left">6</td>
+<td align="right">0.50</td>
+<td align="right">0.5</td>
+<td align="right">586.262</td>
+</tr>
+<tr>
+<td align="left">6</td>
+<td align="right">1.00</td>
+<td align="right">1.0</td>
+<td align="right">662.449</td>
+</tr>
+<tr>
+<td align="left">6</td>
+<td align="right">2.00</td>
+<td align="right">2.0</td>
+<td align="right">433.329</td>
+</tr>
+<tr>
+<td align="left">6</td>
+<td align="right">4.00</td>
+<td align="right">4.0</td>
+<td align="right">265.606</td>
+</tr>
+<tr>
+<td align="left">6</td>
+<td align="right">5.00</td>
+<td align="right">5.0</td>
+<td align="right">184.995</td>
+</tr>
+<tr>
+<td align="left">6</td>
+<td align="right">7.00</td>
+<td align="right">7.0</td>
+<td align="right">101.199</td>
+</tr>
+<tr>
+<td align="left">6</td>
+<td align="right">9.00</td>
+<td align="right">9.0</td>
+<td align="right">59.319</td>
+</tr>
+<tr>
+<td align="left">6</td>
+<td align="right">12.00</td>
+<td align="right">12.0</td>
+<td align="right">23.491</td>
+</tr>
+<tr>
+<td align="left">6</td>
+<td align="right">24.00</td>
+<td align="right">24.0</td>
+<td align="right">0.545</td>
+</tr>
+<tr>
+<td align="left">7</td>
+<td align="right">0.00</td>
+<td align="right">0.0</td>
+<td align="right">1013.516</td>
+</tr>
+<tr>
+<td align="left">7</td>
+<td align="right">0.25</td>
+<td align="right">0.3</td>
+<td align="right">745.675</td>
+</tr>
+<tr>
+<td align="left">7</td>
+<td align="right">0.50</td>
+<td align="right">0.5</td>
+<td align="right">718.587</td>
+</tr>
+<tr>
+<td align="left">7</td>
+<td align="right">1.00</td>
+<td align="right">1.0</td>
+<td align="right">781.679</td>
+</tr>
+<tr>
+<td align="left">7</td>
+<td align="right">2.00</td>
+<td align="right">2.0</td>
+<td align="right">470.730</td>
+</tr>
+<tr>
+<td align="left">7</td>
+<td align="right">4.00</td>
+<td align="right">4.0</td>
+<td align="right">275.556</td>
+</tr>
+<tr>
+<td align="left">7</td>
+<td align="right">5.00</td>
+<td align="right">5.0</td>
+<td align="right">204.793</td>
+</tr>
+<tr>
+<td align="left">7</td>
+<td align="right">7.00</td>
+<td align="right">7.0</td>
+<td align="right">100.950</td>
+</tr>
+<tr>
+<td align="left">7</td>
+<td align="right">9.00</td>
+<td align="right">9.0</td>
+<td align="right">56.513</td>
+</tr>
+<tr>
+<td align="left">7</td>
+<td align="right">12.00</td>
+<td align="right">12.0</td>
+<td align="right">27.106</td>
+</tr>
+<tr>
+<td align="left">7</td>
+<td align="right">24.00</td>
+<td align="right">24.0</td>
+<td align="right">0.605</td>
+</tr>
+<tr>
+<td align="left">8</td>
+<td align="right">0.00</td>
+<td align="right">0.0</td>
+<td align="right">1204.143</td>
+</tr>
+<tr>
+<td align="left">8</td>
+<td align="right">0.25</td>
+<td align="right">0.3</td>
+<td align="right">1061.959</td>
+</tr>
+<tr>
+<td align="left">8</td>
+<td align="right">0.50</td>
+<td align="right">0.5</td>
+<td align="right">732.396</td>
+</tr>
+<tr>
+<td align="left">8</td>
+<td align="right">1.00</td>
+<td align="right">1.0</td>
+<td align="right">852.596</td>
+</tr>
+<tr>
+<td align="left">8</td>
+<td align="right">2.00</td>
+<td align="right">2.0</td>
+<td align="right">744.233</td>
+</tr>
+<tr>
+<td align="left">8</td>
+<td align="right">4.00</td>
+<td align="right">4.0</td>
+<td align="right">453.497</td>
+</tr>
+<tr>
+<td align="left">8</td>
+<td align="right">5.00</td>
+<td align="right">5.0</td>
+<td align="right">275.102</td>
+</tr>
+<tr>
+<td align="left">8</td>
+<td align="right">7.00</td>
+<td align="right">7.0</td>
+<td align="right">234.347</td>
+</tr>
+<tr>
+<td align="left">8</td>
+<td align="right">9.00</td>
+<td align="right">9.0</td>
+<td align="right">147.534</td>
+</tr>
+<tr>
+<td align="left">8</td>
+<td align="right">12.00</td>
+<td align="right">12.0</td>
+<td align="right">78.242</td>
+</tr>
+<tr>
+<td align="left">8</td>
+<td align="right">24.00</td>
+<td align="right">24.0</td>
+<td align="right">4.850</td>
+</tr>
+<tr>
+<td align="left">9</td>
+<td align="right">0.00</td>
+<td align="right">0.0</td>
+<td align="right">1046.097</td>
+</tr>
+<tr>
+<td align="left">9</td>
+<td align="right">0.25</td>
+<td align="right">0.3</td>
+<td align="right">939.874</td>
+</tr>
+<tr>
+<td align="left">9</td>
+<td align="right">0.50</td>
+<td align="right">0.5</td>
+<td align="right">870.022</td>
+</tr>
+<tr>
+<td align="left">9</td>
+<td align="right">1.00</td>
+<td align="right">1.0</td>
+<td align="right">603.659</td>
+</tr>
+<tr>
+<td align="left">9</td>
+<td align="right">2.00</td>
+<td align="right">2.0</td>
+<td align="right">540.365</td>
+</tr>
+<tr>
+<td align="left">9</td>
+<td align="right">4.00</td>
+<td align="right">4.0</td>
+<td align="right">276.078</td>
+</tr>
+<tr>
+<td align="left">9</td>
+<td align="right">5.00</td>
+<td align="right">5.0</td>
+<td align="right">203.832</td>
+</tr>
+<tr>
+<td align="left">9</td>
+<td align="right">7.00</td>
+<td align="right">7.0</td>
+<td align="right">104.226</td>
+</tr>
+<tr>
+<td align="left">9</td>
+<td align="right">9.00</td>
+<td align="right">9.0</td>
+<td align="right">53.603</td>
+</tr>
+<tr>
+<td align="left">9</td>
+<td align="right">12.00</td>
+<td align="right">12.0</td>
+<td align="right">18.484</td>
+</tr>
+<tr>
+<td align="left">9</td>
+<td align="right">24.00</td>
+<td align="right">24.0</td>
+<td align="right">0.515</td>
+</tr>
+<tr>
+<td align="left">10</td>
+<td align="right">0.00</td>
+<td align="right">0.0</td>
+<td align="right">1146.980</td>
+</tr>
+<tr>
+<td align="left">10</td>
+<td align="right">0.25</td>
+<td align="right">0.3</td>
+<td align="right">940.658</td>
+</tr>
+<tr>
+<td align="left">10</td>
+<td align="right">0.50</td>
+<td align="right">0.5</td>
+<td align="right">1065.293</td>
+</tr>
+<tr>
+<td align="left">10</td>
+<td align="right">1.00</td>
+<td align="right">1.0</td>
+<td align="right">758.973</td>
+</tr>
+<tr>
+<td align="left">10</td>
+<td align="right">2.00</td>
+<td align="right">2.0</td>
+<td align="right">608.940</td>
+</tr>
+<tr>
+<td align="left">10</td>
+<td align="right">4.00</td>
+<td align="right">4.0</td>
+<td align="right">354.563</td>
+</tr>
+<tr>
+<td align="left">10</td>
+<td align="right">5.00</td>
+<td align="right">5.0</td>
+<td align="right">294.133</td>
+</tr>
+<tr>
+<td align="left">10</td>
+<td align="right">7.00</td>
+<td align="right">7.0</td>
+<td align="right">157.238</td>
+</tr>
+<tr>
+<td align="left">10</td>
+<td align="right">9.00</td>
+<td align="right">9.0</td>
+<td align="right">97.078</td>
+</tr>
+<tr>
+<td align="left">10</td>
+<td align="right">12.00</td>
+<td align="right">12.0</td>
+<td align="right">37.414</td>
+</tr>
+<tr>
+<td align="left">10</td>
+<td align="right">24.00</td>
+<td align="right">24.0</td>
+<td align="right">0.994</td>
+</tr>
+</tbody></table>
 
 </body>
 
