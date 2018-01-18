@@ -1,11 +1,13 @@
 ---
-title: Oral Dosing
-date: 2017-07-08
-author: Sungpil Han
+title: "Oral Dosing"
+author: "Sungpil Han"
+date: '2017-07-08'
 output:
-  html_document:
+  pdf_document:
     toc: yes
+  html_document:
     df_print: tibble
+    toc: yes
 ---
 
 # IV Dosing Simulation
@@ -24,12 +26,23 @@ kable(inputRaw)
 
 ## Concentration-time plot
 
-![Test](concTimePlot.jpg)
-
+```{r echo = FALSE, fig.width=3}
+if (grepl('result', getwd())) {
+  include_graphics('concTimePlot.jpg')
+} else {
+  include_graphics('result/concTimePlot.jpg')  
+}
+```
 
 ## Individual concentration-time plot
 
-![](concTimeFacet.jpg)
+```{r echo = FALSE, fig.width=3}
+if (grepl('result', getwd())) {
+  include_graphics('concTimeFacet.jpg')
+} else {
+  include_graphics('result/concTimeFacet.jpg')  
+}
+```
 
 # Appendix
 
